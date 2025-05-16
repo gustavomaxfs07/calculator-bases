@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor de Bases Numéricas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #4285f4;
+            padding: 16px 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 500;
+        }
+
+        .logo-icon {
+            margin-right: 10px;
+            font-size: 24px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 40px 0;
+        }
+
+        .converter-box {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            overflow: hidden;
+        }
+
+        .converter-header {
+            display: flex;
+            padding: 16px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            margin-right: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .tab.active {
+            background-color: #e8f0fe;
+            color: #1a73e8;
+        }
+
+        .converter-body {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .input-box {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .input-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .base-selector {
+            position: relative;
+        }
+
+        .base-selector select {
+            appearance: none;
+            background-color: transparent;
+            border: none;
+            padding: 4px 24px 4px 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a73e8;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .base-selector:after {
+            content: '▼';
+            font-size: 10px;
+            color: #1a73e8;
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: none;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus {
+            border-color: #4285f4;
+        }
+
+        .swap-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: #f5f5f5;
+            border-radius: 50%;
+            margin: 0 20px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            transition: all 0.2s;
+        }
+
+        .swap-btn:hover {
+            background-color: #e8f0fe;
+            transform: rotate(180deg);
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 16px;
+            gap: 12px;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+
+        .copy-btn {
+            background-color: #f5f5f5;
+            color: #5f6368;
+        }
+
+        .copy-btn:hover {
+            background-color: #e8eaed;
+        }
+
+        .info-box {
+            margin-top: 30px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            padding: 20px;
+        }
+
+        .info-title {
+            font-size: 16px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: #202124;
+        }
+
+        .info-content {
+            color: #5f6368;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        footer {
+            background-color: white;
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #5f6368;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-links a {
+            color: #5f6368;
+            text-decoration: none;
+        }
+
+        .footer-links a:hover {
+            color: #4285f4;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .input-group {
+                flex-direction: column;
+            }
+
+            .swap-btn {
+                margin: 20px auto;
+                transform: rotate(90deg);
+            }
+
+            .swap-btn:hover {
+                transform: rotate(270deg);
+            }
+        }
+
+        /* Custom styles for the calculator */
+        .calculator-container {
+            display: none;
+        }
+
+        .calculator-container.active {
+            display: block;
+        }
+
+        .converter-container {
+            display: block;
+        }
+
+        .converter-container.hidden {
+            display: none;
+        }
+
+        .calculator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .calculator-display {
+            width: 100%;
+            padding: 16px;
+            font-size: 24px;
+            text-align: right;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            font-family: monospace;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .calculator {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 8px;
+        }
+
+        .calculator button {
+            padding: 16px;
+            border: 1px solid #ddd;
+            background-color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+            user-select: none;
+        }
+
+        .calculator button:hover {
+            background-color: #e8f0fe;
+        }
+
+        .calculator button.number {
+            font-weight: bold;
+        }
+
+        .calculator button.operator {
+            background-color: #f1f3f4;
+        }
+
+        .calculator button.function {
+            background-color: #e8f0fe;
+            color: #1a73e8;
+        }
+
+        .calculator button.equal {
+            background-color: #1a73e8;
+            color: white;
+        }
+
+        .calculator button.clear {
+            background-color: #fce8e6;
+            color: #d93025;
+        }
+
+        .calculator-base-selector {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .calc-base-option {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+            background-color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .calc-base-option:first-child {
+            border-radius: 4px 0 0 4px;
+        }
+
+        .calc-base-option:last-child {
+            border-radius: 0 4px 4px 0;
+        }
+
+        .calc-base-option.active {
+            background-color: #4285f4;
+            color: white;
+            border-color: #4285f4;
+        }
+
+        .output-display {
+            margin-top: 16px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            min-height: 40px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <span class="logo-icon">🔢</span>
+                    <span>Conversor de Bases Numéricas</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content container">
+        <div class="converter-box">
+            <div class="converter-header">
+                <div class="tab active">Conversor</div>
+                <div class="tab">Calculadora</div>
+            </div>
+            <div class="converter-body">
+                <div class="converter-container">
+                    <div class="input-group">
+                        <div class="input-box">
+                            <div class="input-header">
+                                <div class="base-selector">
+                                    <select id="fromBase">
+                                        <option value="2">Binário (Base 2)</option>
+                                        <option value="8">Octal (Base 8)</option>
+                                        <option value="10" selected>Decimal (Base 10)</option>
+                                        <option value="16">Hexadecimal (Base 16)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <textarea id="fromValue" placeholder="Digite um número..."></textarea>
+                        </div>
+
+                        <div class="swap-btn">
+                            ⇄
+                        </div>
+
+                        <div class="input-box">
+                            <div class="input-header">
+                                <div class="base-selector">
+                                    <select id="toBase">
+                                        <option value="2" selected>Binário (Base 2)</option>
+                                        <option value="8">Octal (Base 8)</option>
+                                        <option value="10">Decimal (Base 10)</option>
+                                        <option value="16">Hexadecimal (Base 16)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <textarea id="toValue" placeholder="Resultado da conversão..." readonly></textarea>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="action-btn copy-btn">
+                            Copiar resultado
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="calculator-container">
+                    <div class="calculator-header">
+                        <h3>Calculadora de Bases Numéricas</h3>
+                    </div>
+                    
+                    <div class="calculator-base-selector">
+                        <div class="calc-base-option active" data-base="10">Decimal</div>
+                        <div class="calc-base-option" data-base="2">Binário</div>
+                        <div class="calc-base-option" data-base="16">Hexadecimal</div>
+                        <div class="calc-base-option" data-base="8">Octal</div>
+                    </div>
+                    
+                    <div class="calculator-display">0</div>
+                    
+                    <div class="calculator">
+                        <button class="clear" data-action="clear">AC</button>
+                        <button class="function" data-action="backspace">⌫</button>
+                        <button class="function" data-action="toggle-sign">±</button>
+                        <button class="operator" data-operator="/">÷</button>
+                        
+                        <button class="number" data-digit="7">7</button>
+                        <button class="number" data-digit="8">8</button>
+                        <button class="number" data-digit="9">9</button>
+                        <button class="operator" data-operator="*">×</button>
+                        
+                        <button class="number" data-digit="4">4</button>
+                        <button class="number" data-digit="5">5</button>
+                        <button class="number" data-digit="6">6</button>
+                        <button class="operator" data-operator="-">−</button>
+                        
+                        <button class="number" data-digit="1">1</button>
+                        <button class="number" data-digit="2">2</button>
+                        <button class="number" data-digit="3">3</button>
+                        <button class="operator" data-operator="+">+</button>
+                        
+                        <button class="number" data-digit="0">0</button>
+                        <button class="number hexonly" data-digit="A">A</button>
+                        <button class="number hexonly" data-digit="B">B</button>
+                        <button class="equal" data-action="calculate">=</button>
+                        
+                        <button class="number hexonly" data-digit="C">C</button>
+                        <button class="number hexonly" data-digit="D">D</button>
+                        <button class="number hexonly" data-digit="E">E</button>
+                        <button class="number hexonly" data-digit="F">F</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3 class="info-title">Sobre a conversão de bases numéricas</h3>
+            <div class="info-content">
+                <p>A conversão de bases numéricas é o processo de transformar um número de uma base numérica para outra. As bases mais comuns incluem:</p>
+                <br>
+                <p>• <strong>Base 2 (Binário)</strong>: Utiliza apenas os dígitos 0 e 1. É fundamental em computação.</p>
+                <p>• <strong>Base 8 (Octal)</strong>: Utiliza os dígitos de 0 a 7.</p>
+                <p>• <strong>Base 10 (Decimal)</strong>: Sistema que usamos no dia-a-dia, utiliza os dígitos de 0 a 9.</p>
+                <p>• <strong>Base 16 (Hexadecimal)</strong>: Utiliza os dígitos de 0 a 9 e as letras A a F. Muito utilizado na programação.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="copyright">© 2025 Conversor de Bases Numéricas</div>
+                <div class="footer-links">
+                    <a href="#">Sobre</a>
+                    <a href="#">Ajuda</a>
+                    <a href="#">Feedback</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        
+        // Função para converter um número entre bases
+        function convertBase(value, fromBase, toBase) {
+            // Validar a entrada
+            const validChars = '0123456789ABCDEF';
+            const upperValue = value.toUpperCase();
+            
+            for (let i = 0; i < upperValue.length; i++) {
+                const char = upperValue[i];
+                const charValue = validChars.indexOf(char);
+                if (charValue === -1 || charValue >= fromBase) {
+                    return 'Erro: dígito inválido para a base de origem';
+                }
+            }
+            
+            // Converter para decimal primeiro (se não for decimal)
+            let decimal;
+            if (fromBase === 10) {
+                decimal = parseInt(value, 10);
+            } else {
+                decimal = parseInt(value, fromBase);
+            }
+            
+            // Converter de decimal para a base de destino
+            if (isNaN(decimal)) {
+                return 'Erro: entrada inválida';
+            }
+            
+            if (toBase === 10) {
+                return decimal.toString();
+            }
+            
+            return decimal.toString(toBase).toUpperCase();
+        }
+
+        // Adicionar evento de conversão em tempo real
+        document.getElementById('fromValue').addEventListener('input', function() {
+            const fromValue = this.value.trim();
+            const fromBase = parseInt(document.getElementById('fromBase').value);
+            const toBase = parseInt(document.getElementById('toBase').value);
+            
+            if (fromValue) {
+                const result = convertBase(fromValue, fromBase, toBase);
+                document.getElementById('toValue').value = result;
+            } else {
+                document.getElementById('toValue').value = '';
+            }
+        });
+
+        // Adicionar evento de alteração de bases
+        document.getElementById('fromBase').addEventListener('change', function() {
+            const fromValue = document.getElementById('fromValue').value.trim();
+            if (fromValue) {
+                const fromBase = parseInt(this.value);
+                const toBase = parseInt(document.getElementById('toBase').value);
+                const result = convertBase(fromValue, fromBase, toBase);
+                document.getElementById('toValue').value = result;
+            }
+        });
+
+        document.getElementById('toBase').addEventListener('change', function() {
+            const fromValue = document.getElementById('fromValue').value.trim();
+            if (fromValue) {
+                const fromBase = parseInt(document.getElementById('fromBase').value);
+                const toBase = parseInt(this.value);
+                const result = convertBase(fromValue, fromBase, toBase);
+                document.getElementById('toValue').value = result;
+            }
+        });
+
+        // Adicionar evento para o botão de troca
+        document.querySelector('.swap-btn').addEventListener('click', function() {
+            const fromBase = document.getElementById('fromBase').value;
+            const toBase = document.getElementById('toBase').value;
+            const fromValue = document.getElementById('fromValue').value;
+            const toValue = document.getElementById('toValue').value;
+            
+            document.getElementById('fromBase').value = toBase;
+            document.getElementById('toBase').value = fromBase;
+            document.getElementById('fromValue').value = toValue;
+            document.getElementById('toValue').value = fromValue;
+        });
+
+        // Adicionar evento para o botão de cópia
+        document.querySelector('.copy-btn').addEventListener('click', function() {
+            const toValue = document.getElementById('toValue');
+            toValue.select();
+            document.execCommand('copy');
+            
+            // Feedback visual temporário
+            const originalText = this.textContent;
+            this.textContent = 'Copiado!';
+            setTimeout(() => {
+                this.textContent = originalText;
+            }, 1500);
+        });
+
+        // Variáveis para a calculadora
+        let currentInput = '0';
+        let currentBase = 10;
+        let currentOperator = null;
+        let firstOperand = null;
+        let waitingForSecondOperand = false;
+
+        // Função para atualizar o display da calculadora
+        function updateCalculatorDisplay() {
+            document.querySelector('.calculator-display').textContent = currentInput;
+        }
+
+        // Função para verificar se um caractere é válido para a base atual
+        function isValidDigitForBase(digit, base) {
+            const digitValue = parseInt(digit, 16);
+            return !isNaN(digitValue) && digitValue < base;
+        }
+
+        // Função para realizar cálculos
+        function performCalculation(operator, a, b) {
+            a = parseInt(a, currentBase);
+            b = parseInt(b, currentBase);
+            
+            let result;
+            switch (operator) {
+                case '+':
+                    result = a + b;
+                    break;
+                case '-':
+                    result = a - b;
+                    break;
+                case '*':
+                    result = a * b;
+                    break;
+                case '/':
+                    if (b === 0) {
+                        return 'Erro: Divisão por zero';
+                    }
+                    result = Math.floor(a / b); // Apenas parte inteira na divisão
+                    break;
+                default:
+                    return 'Erro';
+            }
+            
+            return result.toString(currentBase).toUpperCase();
+        }
+
+        // Função para alternar entre as bases na calculadora
+        function switchCalculatorBase(base) {
+            // Salvar o valor atual em decimal
+            let decimalValue = parseInt(currentInput, currentBase);
+            
+            // Se não for um número válido, resetar para 0
+            if (isNaN(decimalValue)) {
+                decimalValue = 0;
+            }
+            
+            // Atualizar a base atual
+            currentBase = base;
+            
+            // Converter o valor decimal para a nova base
+            currentInput = decimalValue.toString(currentBase).toUpperCase();
+            
+            // Atualizar o display
+            updateCalculatorDisplay();
+            
+            // Atualizar o estado dos botões
+            updateCalculatorButtons();
+        }
+
+        // Função para atualizar os botões da calculadora com base na base selecionada
+        function updateCalculatorButtons() {
+            const hexButtons = document.querySelectorAll('.hexonly');
+            
+            // Ativar/desativar botões hexadecimais
+            hexButtons.forEach(button => {
+                if (currentBase === 16) {
+                    button.disabled = false;
+                    button.style.opacity = '1';
+                    button.style.cursor = 'pointer';
+                } else {
+                    button.disabled = true;
+                    button.style.opacity = '0.5';
+                    button.style.cursor = 'not-allowed';
+                }
+            });
+            
+            // Ativar/desativar botões numéricos com base na base selecionada
+            document.querySelectorAll('.number').forEach(button => {
+                if (!button.classList.contains('hexonly')) {
+                    const digit = button.getAttribute('data-digit');
+                    if (parseInt(digit, 10) >= currentBase) {
+                        button.disabled = true;
+                        button.style.opacity = '0.5';
+                        button.style.cursor = 'not-allowed';
+                    } else {
+                        button.disabled = false;
+                        button.style.opacity = '1';
+                        button.style.cursor = 'pointer';
+                    }
+                }
+            });
+        }
+
+        // Adicionar eventos para os botões da calculadora
+        document.querySelectorAll('.calculator button').forEach(button => {
+            button.addEventListener('click', function() {
+                if (this.hasAttribute('data-digit')) {
+                    const digit = this.getAttribute('data-digit');
+                    
+                    // Verificar se o dígito é válido para a base atual
+                    if (!isValidDigitForBase(digit, currentBase)) {
+                        return;
+                    }
+                    
+                    if (waitingForSecondOperand) {
+                        currentInput = digit;
+                        waitingForSecondOperand = false;
+                    } else {
+                        currentInput = currentInput === '0' ? digit : currentInput + digit;
+                    }
+                    
+                    updateCalculatorDisplay();
+                } else if (this.hasAttribute('data-operator')) {
+                    const operator = this.getAttribute('data-operator');
+                    
+                    if (firstOperand === null) {
+                        firstOperand = currentInput;
+                    } else if (!waitingForSecondOperand) {
+                        const result = performCalculation(currentOperator, firstOperand, currentInput);
+                        currentInput = result;
+                        firstOperand = result;
+                        updateCalculatorDisplay();
+                    }
+                    
+                    currentOperator = operator;
+                    waitingForSecondOperand = true;
+                } else if (this.hasAttribute('data-action')) {
+                    const action = this.getAttribute('data-action');
+                    
+                    switch (action) {
+                        case 'clear':
+                            currentInput = '0';
+                            firstOperand = null;
+                            currentOperator = null;
+                            waitingForSecondOperand = false;
+                            updateCalculatorDisplay();
+                            break;
+                            
+                        case 'calculate':
+                            if (firstOperand !== null && currentOperator !== null) {
+                                const result = performCalculation(currentOperator, firstOperand, currentInput);
+                                currentInput = result;
+                                firstOperand = null;
+                                currentOperator = null;
+                                waitingForSecondOperand = false;
+                                updateCalculatorDisplay();
+                            }
+                            break;
+                            
+                        case 'backspace':
+                            if (currentInput.length > 1) {
+                                currentInput = currentInput.slice(0, -1);
+                            } else {
+                                currentInput = '0';
+                            }
+                            updateCalculatorDisplay();
+                            break;
+                            
+                        case 'toggle-sign':
+                            // Converter para decimal, inverter o sinal e voltar para a base atual
+                            let decimal = parseInt(currentInput, currentBase);
+                            decimal = -decimal;
+                            currentInput = decimal.toString(currentBase).toUpperCase();
+                            updateCalculatorDisplay();
+                            break;
+                    }
+                }
+            });
+        });
+
+        // Adicionar eventos para seleção de base na calculadora
+        document.querySelectorAll('.calc-base-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.calc-base-option').forEach(opt => {
+                    opt.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                const newBase = parseInt(this.getAttribute('data-base'));
+                switchCalculatorBase(newBase);
+            });
+        });
+
+        // Alternar entre as abas
+        document.querySelectorAll('.tab').forEach((tab, index) => {
+            tab.addEventListener('click', function() {
+                // Remover classe ativa de todas as abas
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                // Adicionar classe ativa à aba clicada
+                this.classList.add('active');
+                
+                // Alternar entre o conversor e a calculadora
+                const converterContainer = document.querySelector('.converter-container');
+                const calculatorContainer = document.querySelector('.calculator-container');
+                
+                if (index === 0) {
+                    // Aba do conversor
+                    converterContainer.classList.remove('hidden');
+                    calculatorContainer.classList.remove('active');
+                } else {
+                    // Aba da calculadora
+                    converterContainer.classList.add('hidden');
+                    calculatorContainer.classList.add('active');
+                    updateCalculatorButtons();
+                }
+            });
+        });
+
+        // Inicializar a calculadora
+        updateCalculatorDisplay();
+        updateCalculatorButtons();
+    </script>
+</body>
+</html>

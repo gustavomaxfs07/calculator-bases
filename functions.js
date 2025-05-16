@@ -6,11 +6,6 @@ function binaryToDecimal(binario) {
   return decimal;
 }
 
-function binaryToDecimal2(binario) {
-  return parseInt(binario, 2);
-}
-
-
 function decimalToBinary(decimal) {
   if (decimal === 0) return "0";
 
@@ -22,8 +17,9 @@ function decimalToBinary(decimal) {
   return binario;
 }
 
-function decimalToBinary2(decimal) {
-  return decimal.toString(2);
+function convertBases(num, baseOrigin, baseFinal) {
+  const number = parseInt(num, baseOrigin);
+  return number.toString(baseFinal);
 }
 
 
